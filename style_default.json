@@ -1,0 +1,45 @@
+{
+    "--": {
+        "--color-bg": "#1c1c1e",
+        "--color-text": "#ffffff",
+        "--color-main": "#39aea9",
+        "--color-main2": "#557b83",
+        "--color-light": "#e5efc1",
+        "--color-light2": "#a2d5ab",
+        "--color-highlight": "#ffffff22",
+        "--radius": 6.0,
+        "--text-size": 16
+    },
+    
+    
+    
+    "Panel": {
+        "radius": "--radius",
+        "color": "--color-bg"
+    },
+    
+    "Button": {
+        "radius": "--radius",
+        "color_normal": "--color-main",
+        "color_hover": "--color-main2",
+        "color_pressed": "--color-light",
+        "text_color_normal": "--color-text",
+        "text_color_hover": "--color-text",
+        "text_color_pressed": "--color-bg",
+        "text_size": "--text-size",
+        "text": "press me"
+    },
+    
+    
+    
+    ".panel-main": {
+        "color": "--color-main",
+        "radius": 0.0
+    },
+    ".panel-overlay": {
+        "color": "--color-highlight"
+    },
+    ".panel-special": {
+        "color": "--color-light"
+    }
+}
