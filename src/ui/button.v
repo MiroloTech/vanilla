@@ -32,7 +32,7 @@ pub struct Button {
 
 
 
-pub fn (button Button) draw(mut ctx gg.Context) {
+pub fn (button Button) draw(mut ctx gg.Context, _ RenderInfo) {
 	radius :=               *(button.radius                   or { button.style.get[ f64    ](button.classes, "Button:radius") })
 	color_normal :=         *(button.color_normal             or { button.style.get[ Color  ](button.classes, "Button:color_normal") })
 	color_hover :=          *(button.color_hover              or { button.style.get[ Color  ](button.classes, "Button:color_hover") })

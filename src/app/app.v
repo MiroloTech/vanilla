@@ -5,7 +5,7 @@ import os
 
 import src.tlog as log
 import src.geom { Vec2, Spacing }
-import src.std { Color, Signal, Event }
+import src.std { Color, Signal, Event, TreeElement }
 import src.ui { Scene, Button, Panel, Style, uiconst }
 
 
@@ -32,6 +32,8 @@ fn (mut app App) init() {
 		panic("")
 	}
 	
+	
+	// Init main scene
 	app.scene.children << Panel{
 		pos: uiconst(Vec2{0.0, 0.0})
 		size: &app.screen_size

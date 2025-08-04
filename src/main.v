@@ -8,9 +8,9 @@ import src.app { App }
 fn main() {
 	mut app_struct := &App{}
     app_struct.ctx = gg.new_context(
-        bg_color:     Color.hex("#232323").get_gx()
-        width:        600
-        height:       400
+        bg_color:     Color.hex("#000000").get_gx()
+        width:        1920
+        height:       1080
 		user_data:    app_struct
         window_title: 'Vanilla UI'
         frame_fn:     app_struct.frame

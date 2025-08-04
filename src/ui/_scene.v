@@ -2,6 +2,7 @@ module ui
 
 import gg
 import sokol.sapp
+import time
 
 import src.geom { Vec2, Spacing }
 
@@ -9,6 +10,8 @@ import src.geom { Vec2, Spacing }
 pub struct Scene {
 	pub mut:
 	children             []Component
+	delta                f64                  = 0.0
+	stopwatch            time.StopWatch       = time.StopWatch{} // time.new_stopwatch{auto_start: true}
 }
 
 
@@ -22,16 +25,22 @@ pub fn (mut scene Scene) draw(mut ctx gg.Context) {
 	*/
 	
 	// > Rendering
-	draw_recursively(scene.children, mut ctx)
+	render_info := RenderInfo{
+		delta: scene.stopwatch.elapsed().seconds()
+	}
+	draw_recursively(scene.children, mut ctx, render_info)
+	
+	// > Reset Drawing settings
+	scene.stopwatch.restart()
 }
 
 
-pub fn draw_recursively(children []Component, mut ctx gg.Context) {
+pub fn draw_recursively(children []Component, mut ctx gg.Context, render_info RenderInfo) {
 	for child in children {
 		if child.children.len > 0 {
-			draw_recursively(child.children, mut ctx)
+			draw_recursively(child.children, mut ctx, render_info)
 		}
-		child.draw(mut ctx)
+		child.draw(mut ctx, render_info)
 	}
 }
 
@@ -45,7 +54,7 @@ pub fn (mut scene Scene) event(mut ctx gg.Context, event &gg.Event) {
 
 
 pub interface Component {
-	draw(mut gg.Context)
+	draw(mut gg.Context, RenderInfo)
 	
 	mut:
 	event(mut gg.Context, &gg.Event)

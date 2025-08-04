@@ -23,7 +23,7 @@ pub fn get_plugin() &Plugin {
 @[export: "ready"]
 pub fn ready(mut plugin_ptr voidptr) {
 	plugin := unsafe { &Plugin(plugin_ptr) }
-	log.funfact("Plugin ${plugin.title} loaded")
+	// log.funfact("Plugin ${plugin.title} loaded")
 }
 
 @[export: "update"]
