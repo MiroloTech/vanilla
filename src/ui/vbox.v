@@ -1,29 +1,23 @@
 module ui
 
-import gg
-
-import src.std { Color }
-
 
 @[heap]
-pub struct Panel {
+pub struct VBox {
 	Basic
 	pub mut:
-	color       ?&Color
-	radius      ?&f64
+	spacing          ?&f64
 }
 
-
-
-pub fn (panel Panel) draw(mut ctx gg.Context, _ RenderInfo) {
-	radius := *(panel.radius or { panel.style.get[f64](panel.classes, "Panel:radius") })
-	color := *(panel.color or { panel.style.get[Color](panel.classes, "Panel:color") })
+pub fn (mut vbox VBox) format(_ &Component) {
+	spacing := *(vbox.spacing or { vbox.style.get[f64](vbox.classes, "VBox:spacing") })
 	
-	ctx.draw_rounded_rect_filled(
-		f32((*panel.pos).x), f32((*panel.pos).y),
-		f32((*panel.size).x), f32((*panel.size).y),
-		f32(radius),
-		color.get_gx()
-	)
+	mut y := vbox.pos.y
+	for mut child in vbox.get_children() {
+		child.pos.y = y
+		
+		child.pos.x = vbox.pos.x
+		child.size.x = vbox.size.x
+		
+		y += child.size.y + spacing
+	}
 }
-

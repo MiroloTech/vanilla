@@ -161,9 +161,8 @@ pub struct Color {
 	WHITE_SMOKE               Color = Color{0.960784,   0.960784,   0.960784,   1}
 	YELLOW                    Color = Color{1,          1,          0,          1}
 	YELLOW_GREEN              Color = Color{0.603922,   0.803922,   0.196078,   1}
-	
-	// STUFF
 	*/
+	
 	pub mut:
 	r  f64
 	g  f64
@@ -173,7 +172,7 @@ pub struct Color {
 
 // --- Custom Const. Conversions ---
 
-// Creates and returns a Color instance constructed from hsv components, where h : 0 > 359 , s : 0 > 1 , v : 0 > 1
+// hsv creates and returns a Color instance constructed from hsv components, where h : 0 > 359 , s : 0 > 1 , v : 0 > 1
 pub fn Color.hsv(h f64, s f64, v f64) Color {
 	// Snap / mod values
 	hh := math.fmod(h, 360.0)
@@ -198,24 +197,24 @@ pub fn Color.hsv(h f64, s f64, v f64) Color {
 	return Color{ rr, gg, bb, 1.0 }
 }
 
-// Creates and returns a Color instance constructed from hsv components, where h : 0 > 359 , s : 0 > 1 , v : 0 > 1 , a : 0 > 1
+// hsva creates and returns a Color instance constructed from hsv components, where h : 0 > 359 , s : 0 > 1 , v : 0 > 1 , a : 0 > 1
 pub fn Color.hsva(h f64, s f64, v f64, a f64) Color {
 	mut c := Color.hsv(h, s, v)
 	c.a = a
 	return c
 }
 
-// Returns a color from the given r, g, b components ( a = 1.0 )
+// rgb returns a color from the given r, g, b components ( a = 1.0 )
 pub fn Color.rgb(r f64, g f64, b f64) Color {
 	return Color { r, g, b, 1.0 }
 }
 
-// Returns a color from the given r, g, b, a components
+// rgba returns a color from the given r, g, b, a components
 pub fn Color.rgba(r f64, g f64, b f64, a f64) Color {
 	return Color { r, g, b, a }
 }
 
-// a color from the given string hex - returns 
+// hex returns a color from the given hex string
 pub fn Color.hex(hex string) Color {
 	// Remove Every unnescecarry charecter from hex
 	mut clean_hex := ""
@@ -291,23 +290,28 @@ pub fn Color.hex(hex string) Color {
 }
 
 
-// Returns the 8-bit variant of the r, g, b components
+// value returns the average value of the r, g, b channels
+pub fn (c Color) value() f64 {
+	return (c.r + c.g + c.b) / 3.0
+}
+
+// get_rgb8 returns the 8-bit variant of the r, g, b components
 pub fn (c Color) get_rgb8() (u8, u8, u8) {
 	return u8(c.r * 255.0), u8(c.g * 255.0), u8(c.b * 255.0)
 }
 
-// Returns the 8-bit variant of the r, g, b, a components
+// get_rgba8 returns the 8-bit variant of the r, g, b, a components
 pub fn (c Color) get_rgba8() (u8, u8, u8, u8) {
 	return u8(c.r * 255.0), u8(c.g * 255.0), u8(c.b * 255.0), u8(c.a * 255.0)
 }
 
-// Returns the color in the term.ui format
+// get_tui returns the color in the term.ui format
 pub fn (c Color) get_tui() tui.Color {
 	r, g, b := c.get_rgb8()
 	return tui.Color{r, g, b}
 }
 
-// Returns the color in the gx format
+// get_gx returns the color in the gx format
 pub fn (c Color) get_gx() gx.Color {
 	r, g, b, a := c.get_rgba8()
 	return gx.Color{r, g, b, a}
@@ -316,19 +320,19 @@ pub fn (c Color) get_gx() gx.Color {
 
 // --- Integrated modifiers / methods ---
 
-// Returns a string type of the color
+// str returns a string type of the color
 pub fn (c Color) str() string {
 	return "(${c.r}, ${c.g}, ${c.b}, ${c.a})"
 }
 
-// Returns a clean, pretty version of the color > (0.1159, 0.0, 0.796, 1.0)  >>  ( 0.12, 0.00, 0.80, 1.00 )
+// pretty_str returns a clean, pretty version of the color > (0.1159, 0.0, 0.796, 1.0)  >>  ( 0.12, 0.00, 0.80, 1.00 )
 pub fn (c Color) pretty_str() string {
 	return "( ${c.r:2}, ${c.g:2}, ${c.b:2}, ${c.a:2} )"
 }
 
 // >> Utillity
 
-// Returns a darkened ( and clamped ) copy of the orignal color, based on the given darking value
+// darken returns a darkened ( and clamped ) copy of the orignal color, based on the given darking value
 // This function excludes darkening of the alpha channel
 pub fn (c Color) darken(v f64) Color {
 	return Color{
@@ -339,7 +343,7 @@ pub fn (c Color) darken(v f64) Color {
 	}
 }
 
-// Returns a brightened ( and clamped ) copy of the orignal color, based on the given brighting value
+// brighten returns a brightened ( and clamped ) copy of the orignal color, based on the given brighting value
 // This function excludes brightening of the alpha channel
 pub fn (c Color) brighten(v f64) Color {
 	return Color{

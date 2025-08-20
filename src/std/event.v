@@ -1,6 +1,7 @@
 module std
 
 import gg
+import src.tlog
 
 type EventFN = fn (mut origin voidptr, event Event)
 
@@ -11,6 +12,7 @@ pub struct Event {
 	keybindings       []KeyBinding
 	meta              map[string]string
 	ref               voidptr                                   = unsafe { nil }
+	description       string
 	functions         []EventFN
 }
 
@@ -27,20 +29,59 @@ pub fn Event.empty(name string) Event {
 	}
 }
 
+
+pub fn (event Event) is_ready() bool {
+	return event.functions.len > 0
+}
+
+
 pub fn (mut event Event) trigger() {
-	// event.meta = meta.clone()
-	// event.ref = unsafe { nil }
+	for f in event.functions {
+		f(mut event.ref, event)
+	}
+}
+
+pub fn (mut event Event) trigger_with_meta(meta map[string]string) {
+	event.meta = meta.clone()
 	for f in event.functions {
 		f(mut event.ref, event)
 	}
 }
 
 pub fn (mut event Event) trigger_from(mut origin voidptr) {
-	// event.meta = meta.clone()
 	event.ref = origin
 	for f in event.functions {
 		f(mut origin, event)
 	}
+}
+
+pub fn (mut event Event) trigger_from_with_meta(mut origin voidptr, meta map[string]string) {
+	event.meta = meta.clone()
+	for f in event.functions {
+		f(mut event.ref, event)
+	}
+}
+
+pub fn (mut events []Event) trigger(name string) {
+	tlog.funfact("Event triggered : ${name}")
+	for mut event in events {
+		if event.name == name {
+			event.trigger()
+			return
+		}
+	}
+	tlog.error("Event '${name}' not found in array of events")
+}
+
+pub fn (mut events []Event) trigger_from(name string, mut origin voidptr) {
+	tlog.funfact("Event triggered : ${name}")
+	for mut event in events {
+		if event.name == name {
+			event.trigger_from(mut origin)
+			return
+		}
+	}
+	tlog.error("Event '${name}' not found in array of events")
 }
 
 // TODO : Create trigger functions with meta data

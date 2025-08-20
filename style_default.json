@@ -7,6 +7,9 @@
         "--color-light": "#e5efc1",
         "--color-light2": "#a2d5ab",
         "--color-highlight": "#ffffff22",
+        "--color-transparent": "#ffffff00",
+        "--color-bright.100": "#ffffff21",
+        "--color-bright.200": "#ffffff33",
         "--radius": 6.0,
         "--text-size": 16
     },
@@ -26,8 +29,23 @@
         "text_color_normal": "--color-text",
         "text_color_hover": "--color-text",
         "text_color_pressed": "--color-bg",
+        "icon_color": "--color-text",
         "text_size": "--text-size",
-        "text": "press me"
+        "text_align": "centre",
+        "text": "press me",
+        "padding_left": 5.0,
+        "padding_right": 5.0,
+        "toggle_mode": false
+    },
+    
+    "FileTree": {
+        "button_height": 20.0,
+        "button_classes": "btn-file-tree"
+    },
+    
+    
+    "VBox": {
+        "spacing": 10.0
     },
     
     
@@ -41,5 +59,17 @@
     },
     ".panel-special": {
         "color": "--color-light"
+    },
+    
+    ".btn-file-tree": {
+        "color_normal": "--color-transparent",
+        "color_hover": "--color-bright.100",
+        "color_pressed": "--color-bright.200",
+        "text_color_normal": "--color-text",
+        "text_color_hover": "--color-text",
+        "text_color_pressed": "--color-text",
+        "text_align": "start",
+        "radius": 0.0,
+        "toggle_mode": true
     }
 }

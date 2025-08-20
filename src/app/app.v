@@ -1,12 +1,12 @@
 module app
 
 import gg
-import os
 
 import src.tlog as log
+import src.app.project { Project }
 import src.geom { Vec2, Spacing }
-import src.std { Color, Signal, Event, TreeElement }
-import src.ui { Scene, Button, Panel, Style, uiconst }
+import src.std { Color, Signal, Event, Image }
+import src.ui { Scene, Button, Panel, FileTree, VBox, Style, uiconst }
 
 
 // @[heap]
@@ -70,19 +70,59 @@ fn (mut app App) init() {
 		classes: ["panel-main"]
 	}
 	
-	app.scene.children << Button{
+	mut btn := Button{
 		pos: uiconst(Vec2{200.0, 350.0})
 		size: uiconst(Vec2{150.0, 25.0})
 		style: &app.style
 		text: uiconst("Add ping")
-		on_pressed: Signal{app: app, func: fn ( signal Signal ) {
-			mut app := unsafe { &App(signal.app) }
-			app.pings += 1
-			println("Ping count : ${app.pings}")
-	
-			unsafe { app.events["ping"].trigger_from(mut app) }
-		}}
 	}
+	btn.on_pressed.connect(fn ( app_data voidptr ) {
+		mut app := unsafe { &App(app_data) }
+		app.pings += 1
+		println("Ping count : ${app.pings}")
+		
+		global_events.trigger("ping")
+	}, mut &app)
+	app.scene.children << btn
+	
+	/*
+	app.scene.children << VBox{
+		style: &app.style
+		pos: uiconst(Vec2{50.0, 400.0})
+		size: uiconst(Vec2{150.0, 150.0})
+		
+		children: [
+			Button{
+				pos: uiconst(Vec2{0.0, 0.0})
+				size: uiconst(Vec2{150.0, 25.0})
+				style: &app.style
+				text: uiconst("Button 1")
+				on_pressed: Signal{app: app, func: fn ( signal Signal ) {
+					println("1")
+				}}
+			},
+			Button{
+				pos: uiconst(Vec2{0.0, 0.0})
+				size: uiconst(Vec2{150.0, 25.0})
+				style: &app.style
+				text: uiconst("Button 2")
+				// visible: false
+				on_pressed: Signal{app: app, func: fn ( signal Signal ) {
+					println("2")
+				}}
+			},
+			Button{
+				pos: uiconst(Vec2{0.0, 0.0})
+				size: uiconst(Vec2{150.0, 25.0})
+				style: &app.style
+				text: uiconst("Button 3")
+				on_pressed: Signal{app: app, func: fn ( signal Signal ) {
+					println("3")
+				}}
+			},
+		]
+	}
+	*/
 	
 	// Init plugins
 	log.info("Loading plugins...")
@@ -90,18 +130,34 @@ fn (mut app App) init() {
 	log.info("Plugin loading finished")
 	
 	
+	proj := Project{
+		path: "D:/DATA/Zyrith/Projects/Serious/vanilla"
+	}
+	// println(proj.get_file_tree())
+	// println(proj.get_file_tree().get_tree_data(1))
+	// TODO : Make Tree UI Element to render 'Tree' elements
+	
+	mut file_tree := FileTree{
+		pos: uiconst(Vec2{50.0, 400.0})
+		size: uiconst(Vec2{250.0, 150.0})
+		style: &app.style
+	}
+	file_tree.set_tree(proj.get_file_tree())
+	app.scene.children << file_tree
+	
 	app.plugin_loaders.trigger_init(mut app)
 	
 	
 	// Init Events
 	unsafe { app.events["ping"] = Event.basic("ping", app.plugin_loaders.trigger_event) }
+	unsafe { app.events["tree_element_selected"] = Event.basic("tree_element_selected", app.plugin_loaders.trigger_event) }
 }
 
 
 fn (mut app App) frame() {
     app.ctx.begin()
     app.scene.draw(mut app.ctx)
-    app.ctx.end()
+    // app.scene.draw_debug(mut app.ctx)
 	
 	window_size := app.ctx.window_size()
 	app.screen_size = Vec2{ f64(window_size.width), f64(window_size.height) }
@@ -112,6 +168,8 @@ fn (mut app App) frame() {
 	}
 	
 	app.plugin_loaders.trigger_update(mut app)
+	
+    app.ctx.end()
 }
 
 fn (mut app App) event(event &gg.Event, _ voidptr) {
@@ -127,6 +185,7 @@ fn (mut app App) cleanup() {
 
 
 fn (mut app App) load_plugins() {
+	/* DISABLED, while the editor is still in alpha
 	// TODO : Do this with a loop through every .dll file in lib folder
 	plugin_dir := os.join_path(@VMODROOT, "plugins") // TODO : Change VMODROOT To custom folder in AppData
 	plugin_loader := PluginLoader.load(plugin_dir, "ping_preview") or {
@@ -134,4 +193,5 @@ fn (mut app App) load_plugins() {
 		return
 	}
 	app.plugin_loaders << plugin_loader
+	*/
 }
